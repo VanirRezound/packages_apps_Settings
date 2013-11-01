@@ -44,6 +44,10 @@
             android:summary="@string/lockscreen_quick_unlock_control_summary"
             android:defaultValue="false" />
 
+        <CheckBoxPreference
+            android:key="keyguard_enable_widgets"
+            android:title="@string/security_enable_widgets_title"/>
+
         <PreferenceScreen
             android:fragment="com.android.settings.OwnerInfoSettings"
             android:key="owner_info_settings"

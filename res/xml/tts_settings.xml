@@ -36,9 +36,13 @@
             android:entryValues="@array/tts_rate_values" />
     </PreferenceCategory>
 
-    <Preference
-        android:key="tts_play_example"
-        android:persistent="false"
-        android:title="@string/tts_play_example_title"
-        android:summary="@string/tts_play_example_summary" />
+    <Preference android:key="tts_play_example"
+         android:persistent="false"
+         android:title="@string/tts_play_example_title"
+         android:summary="@string/tts_play_example_summary" />
+
+    <Preference android:key="tts_status"
+         style="?android:attr/preferenceInformationStyle"
+         android:persistent="false"
+         android:title="@string/tts_status_title"/>
 </PreferenceScreen>

@@ -40,6 +40,7 @@ import android.os.storage.StorageManager;
 import android.os.storage.StorageVolume;
 import android.preference.Preference;
 import android.preference.PreferenceCategory;
+import android.provider.MediaStore;
 import android.text.format.Formatter;
 import android.util.Log;
 import android.widget.Toast;
@@ -155,6 +156,8 @@ public class StorageVolumePreferenceCategory extends PreferenceCategory
     public void init() {
         final Context context = getContext();
 
+        removeAll();
+
         final UserInfo currentUser;
         try {
             currentUser = ActivityManagerNative.getDefault().getCurrentUser();
@@ -269,9 +272,6 @@ public class StorageVolumePreferenceCategory extends PreferenceCategory
 
         if (Environment.MEDIA_MOUNTED_READ_ONLY.equals(state)) {
             mItemAvailable.setTitle(R.string.memory_available_read_only);
-            if (mFormatPreference != null) {
-                removePreference(mFormatPreference);
-            }
         } else {
             mItemAvailable.setTitle(R.string.memory_available);
         }
@@ -296,9 +296,6 @@ public class StorageVolumePreferenceCategory extends PreferenceCategory
             removePreference(mUsageBarPreference);
             removePreference(mItemTotal);
             removePreference(mItemAvailable);
-            if (mFormatPreference != null) {
-                removePreference(mFormatPreference);
-            }
         }
 
         if (mUsbConnected && (UsbManager.USB_FUNCTION_MTP.equals(mUsbFunction) ||
@@ -401,6 +398,7 @@ public class StorageVolumePreferenceCategory extends PreferenceCategory
     }
 
     public void onStorageStateChanged() {
+        init();
         measure();
     }
 
@@ -467,8 +465,8 @@ public class StorageVolumePreferenceCategory extends PreferenceCategory
         } else if (pref == mItemDcim) {
             intent = new Intent(Intent.ACTION_VIEW);
             intent.putExtra(Intent.EXTRA_LOCAL_ONLY, true);
-            // TODO Create a Videos category, type = vnd.android.cursor.dir/video
-            intent.setType("vnd.android.cursor.dir/image");
+            // TODO Create a Videos category, MediaStore.Video.Media.EXTERNAL_CONTENT_URI
+            intent.setData(MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
         } else if (pref == mItemMisc) {
             Context context = getContext().getApplicationContext();
             intent = new Intent(context, MiscFilesHandler.class);

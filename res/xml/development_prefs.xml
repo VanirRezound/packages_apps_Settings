@@ -52,6 +52,13 @@
         android:summary="@string/keep_screen_on_summary" />
 
     <ListPreference
+        android:key="select_runtime"
+        android:title="@string/select_runtime_title"
+        android:dialogTitle="@string/select_runtime_dialog_title"
+        android:entries="@array/select_runtime_titles"
+        android:entryValues="@array/select_runtime_values" />
+
+    <ListPreference
         android:key="hdcp_checking"
         android:title="@string/hdcp_checking_title"
         android:dialogTitle="@string/hdcp_checking_dialog_title"
@@ -59,9 +66,15 @@
         android:entryValues="@array/hdcp_checking_values" />
 
     <CheckBoxPreference
-        android:key="enforce_read_external"
-        android:title="@string/enforce_read_external_title"
-        android:summary="@string/enforce_read_external_summary" />
+        android:key="bt_hci_snoop_log"
+        android:title="@string/bt_hci_snoop_log"
+        android:summary="@string/bt_hci_snoop_log_summary"/>
+
+    <PreferenceScreen android:key="proc_stats"
+            android:title="@string/process_stats_summary_title"
+            android:summary="@string/process_stats_summary"
+            android:fragment="com.android.settings.applications.ProcessStatsUi">
+    </PreferenceScreen>
 
     <PreferenceCategory
         android:key="debug_debugging_category"
@@ -99,6 +112,16 @@
             android:persistent="false" />
 
         <CheckBoxPreference
+            android:key="enable_terminal"
+            android:title="@string/enable_terminal_title"
+            android:summary="@string/enable_terminal_summary" />
+
+        <CheckBoxPreference
+            android:key="bugreport_in_power"
+            android:title="@string/bugreport_in_power"
+            android:summary="@string/bugreport_in_power_summary"/>
+
+        <CheckBoxPreference
             android:key="allow_mock_location"
             android:title="@string/allow_mock_location"
             android:summary="@string/allow_mock_location_summary" />
@@ -115,7 +138,12 @@
         <CheckBoxPreference
             android:key="verify_apps_over_usb"
             android:title="@string/verify_apps_over_usb_title"
-            android:summary="@string/verify_apps_over_usb_summary" />
+            android:summary="@string/verify_apps_over_usb_summary"/>
+
+        <CheckBoxPreference
+            android:key="wifi_display_certification"
+            android:title="@string/wifi_display_certification"
+            android:summary="@string/wifi_display_certification_summary"/>
     </PreferenceCategory>
 
     <PreferenceCategory
@@ -147,6 +175,11 @@
             android:title="@string/debug_layout"
             android:summary="@string/debug_layout_summary"/>
 
+        <CheckBoxPreference
+            android:key="force_rtl_layout_all_locales"
+            android:title="@string/force_rtl_layout_all_locales"
+            android:summary="@string/force_rtl_layout_all_locales_summary"/>
+
         <ListPreference
             android:key="overlay_display_devices"
             android:title="@string/overlay_display_devices_title"
@@ -174,10 +207,12 @@
                 android:title="@string/show_hw_layers_updates"
                 android:summary="@string/show_hw_layers_updates_summary"/>
 
-        <CheckBoxPreference
-                android:key="show_hw_overdraw"
-                android:title="@string/show_hw_overdraw"
-                android:summary="@string/show_hw_overdraw_summary"/>
+        <ListPreference
+                android:key="debug_hw_overdraw"
+                android:title="@string/debug_hw_overdraw"
+                android:persistent="false"
+                android:entries="@array/debug_hw_overdraw_entries"
+                android:entryValues="@array/debug_hw_overdraw_values" />
 
         <ListPreference
                 android:key="show_non_rect_clip"
@@ -250,11 +285,6 @@
             android:key="show_all_anrs"
             android:title="@string/show_all_anrs"
             android:summary="@string/show_all_anrs_summary"/>
-
-        <CheckBoxPreference
-            android:key="experimental_webview"
-            android:title="@string/experimental_webview"
-            android:summary="@string/experimental_webview_summary"/>
 
      </PreferenceCategory>
 </PreferenceScreen>

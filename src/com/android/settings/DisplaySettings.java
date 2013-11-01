@@ -125,14 +125,22 @@ public class DisplaySettings extends SettingsPreferenceFragment implements
 
         addPreferencesFromResource(R.xml.display_settings);
 
+        mAccelerometer = (CheckBoxPreference) findPreference(KEY_ACCELEROMETER);
+        mAccelerometer.setPersistent(false);
+        if (!RotationPolicy.isRotationSupported(getActivity())
+                || RotationPolicy.isRotationLockToggleSupported(getActivity())) {
+            // If rotation lock is supported, then we do not provide this option in
+            // Display settings.  However, is still available in Accessibility settings,
+            // if the device supports rotation.
+            getPreferenceScreen().removePreference(mAccelerometer);
+        }
+
         mScreenSaverPreference = findPreference(KEY_SCREEN_SAVER);
         if (mScreenSaverPreference != null
                 && getResources().getBoolean(
                         com.android.internal.R.bool.config_dreamsSupported) == false) {
             getPreferenceScreen().removePreference(mScreenSaverPreference);
         }
-
-        mDisplayRotationPreference = (PreferenceScreen) findPreference(KEY_DISPLAY_ROTATION);
 
         mScreenTimeoutPreference = (ListPreference) findPreference(KEY_SCREEN_TIMEOUT);
         final long currentTimeout = Settings.System.getLong(resolver, SCREEN_OFF_TIMEOUT,
@@ -279,13 +287,18 @@ public class DisplaySettings extends SettingsPreferenceFragment implements
             }
         }
         if (revisedEntries.size() != entries.length || revisedValues.size() != values.length) {
+            final int userPreference = Integer.parseInt(screenTimeoutPreference.getValue());
             screenTimeoutPreference.setEntries(
                     revisedEntries.toArray(new CharSequence[revisedEntries.size()]));
             screenTimeoutPreference.setEntryValues(
                     revisedValues.toArray(new CharSequence[revisedValues.size()]));
-            final int userPreference = Integer.parseInt(screenTimeoutPreference.getValue());
             if (userPreference <= maxTimeout) {
                 screenTimeoutPreference.setValue(String.valueOf(userPreference));
+            } else if (revisedValues.size() > 0
+                    && Long.parseLong(revisedValues.get(revisedValues.size() - 1).toString())
+                    == maxTimeout) {
+                // If the last one happens to be the same as the max timeout, select that
+                screenTimeoutPreference.setValue(String.valueOf(maxTimeout));
             } else {
                 // There will be no highlighted selection since nothing in the list matches
                 // maxTimeout. The user can still select anything less than maxTimeout.

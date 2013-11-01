@@ -23,6 +23,7 @@ package com.android.settings;
 import static android.provider.Settings.System.SCREEN_OFF_TIMEOUT;
 
 import android.app.Activity;
+import android.app.ActivityManager;
 import android.app.AlertDialog;
 import android.app.admin.DevicePolicyManager;
 import android.content.Context;
@@ -57,9 +58,8 @@ import java.util.List;
 /**
  * Gesture lock pattern settings.
  */
-public class SecuritySettings extends SettingsPreferenceFragment
+public class SecuritySettings extends RestrictedSettingsFragment
         implements OnPreferenceChangeListener, DialogInterface.OnClickListener {
-
     static final String TAG = "SecuritySettings";
 
     // Lock Settings
@@ -73,6 +73,8 @@ public class SecuritySettings extends SettingsPreferenceFragment
     private static final String KEY_DEVICE_ADMIN_CATEGORY = "device_admin_category";
     private static final String KEY_LOCK_AFTER_TIMEOUT = "lock_after_timeout";
     private static final String KEY_OWNER_INFO_SETTINGS = "owner_info_settings";
+    private static final String KEY_ENABLE_WIDGETS = "keyguard_enable_widgets";
+
     private static final int SET_OR_CHANGE_LOCK_METHOD_REQUEST = 123;
     private static final int CONFIRM_EXISTING_FOR_BIOMETRIC_WEAK_IMPROVE_REQUEST = 124;
     private static final int CONFIRM_EXISTING_FOR_BIOMETRIC_WEAK_LIVELINESS_OFF = 125;
@@ -83,6 +85,7 @@ public class SecuritySettings extends SettingsPreferenceFragment
     private static final String KEY_SHOW_PASSWORD = "show_password";
     private static final String KEY_CREDENTIAL_STORAGE_TYPE = "credential_storage_type";
     private static final String KEY_RESET_CREDENTIALS = "reset_credentials";
+    private static final String KEY_CREDENTIALS_INSTALL = "credentials_install";
     private static final String KEY_TOGGLE_INSTALL_APPLICATIONS = "toggle_install_applications";
     private static final String KEY_TOGGLE_VERIFY_APPLICATIONS = "toggle_verify_applications";
     private static final String KEY_POWER_INSTANTLY_LOCKS = "power_button_instantly_locks";
@@ -97,7 +100,7 @@ public class SecuritySettings extends SettingsPreferenceFragment
     private static final String KEY_BLACKLIST = "blacklist";
 
     private PackageManager mPM;
-    DevicePolicyManager mDPM;
+    private DevicePolicyManager mDPM;
 
     private ChooseLockSettingsHelper mChooseLockSettingsHelper;
     private LockPatternUtils mLockPatternUtils;
@@ -118,10 +121,15 @@ public class SecuritySettings extends SettingsPreferenceFragment
     private ListPreference mSmsSecurityCheck;
     private PreferenceScreen mBlacklist;
     private CheckBoxPreference mQuickUnlock;
+    private CheckBoxPreference mEnableKeyguardWidgets;
 
     private Preference mNotificationAccess;
 
     private boolean mIsPrimary;
+
+    public SecuritySettings() {
+        super(null /* Don't ask for restrictions pin on creation. */);
+    }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -180,9 +188,6 @@ public class SecuritySettings extends SettingsPreferenceFragment
         addPreferencesFromResource(resid);
 
         // Add options for device encryption
-        DevicePolicyManager dpm =
-                (DevicePolicyManager) getSystemService(Context.DEVICE_POLICY_SERVICE);
-
         mIsPrimary = UserHandle.myUserId() == UserHandle.USER_OWNER;
 
         if (!mIsPrimary) {
@@ -198,7 +203,7 @@ public class SecuritySettings extends SettingsPreferenceFragment
         }
 
         if (mIsPrimary) {
-            switch (dpm.getStorageEncryptionStatus()) {
+            switch (mDPM.getStorageEncryptionStatus()) {
             case DevicePolicyManager.ENCRYPTION_STATUS_ACTIVE:
                 // The device is currently encrypted.
                 addPreferencesFromResource(R.xml.security_settings_encrypted);
@@ -284,8 +289,33 @@ public class SecuritySettings extends SettingsPreferenceFragment
                 }
             }
 
+        // Enable or disable keyguard widget checkbox based on DPM state
+        mEnableKeyguardWidgets = (CheckBoxPreference) root.findPreference(KEY_ENABLE_WIDGETS);
+        if (mEnableKeyguardWidgets != null) {
+            if (ActivityManager.isLowRamDeviceStatic()) {
+                // Widgets take a lot of RAM, so disable them on low-memory devices
+                PreferenceGroup securityCategory
+                        = (PreferenceGroup) root.findPreference(KEY_SECURITY_CATEGORY);
+                if (securityCategory != null) {
+                    securityCategory.removePreference(root.findPreference(KEY_ENABLE_WIDGETS));
+                    mEnableKeyguardWidgets = null;
+                }
+            } else {
+                final boolean disabled = (0 != (mDPM.getKeyguardDisabledFeatures(null)
+                        & DevicePolicyManager.KEYGUARD_DISABLE_WIDGETS_ALL));
+                if (disabled) {
+                    mEnableKeyguardWidgets.setSummary(
+                            R.string.security_enable_widgets_disabled_summary);
+                } else {
+                    mEnableKeyguardWidgets.setSummary("");
+                }
+                mEnableKeyguardWidgets.setEnabled(!disabled);
+            }
+        }
+
         // Show password
         mShowPassword = (CheckBoxPreference) root.findPreference(KEY_SHOW_PASSWORD);
+        mResetCredentials = root.findPreference(KEY_RESET_CREDENTIALS);
 
             if (root.findPreference(KEY_SIM_LOCK) != null) {
              // SIM/RUIM lock
@@ -304,18 +334,17 @@ public class SecuritySettings extends SettingsPreferenceFragment
                 iccLock.setIntent(intent);
             }
 
-            // Credential storage
-            final UserManager um = (UserManager) getActivity().getSystemService(Context.USER_SERVICE);
-            if (!um.hasUserRestriction(UserManager.DISALLOW_CONFIG_CREDENTIALS)) {
-                mKeyStore = KeyStore.getInstance();
-                Preference credentialStorageType = root.findPreference(KEY_CREDENTIAL_STORAGE_TYPE);
+        // Credential storage
+        final UserManager um = (UserManager) getActivity().getSystemService(Context.USER_SERVICE);
+        mKeyStore = KeyStore.getInstance(); // needs to be initialized for onResume()
+        if (!um.hasUserRestriction(UserManager.DISALLOW_CONFIG_CREDENTIALS)) {
+            Preference credentialStorageType = root.findPreference(KEY_CREDENTIAL_STORAGE_TYPE);
 
             final int storageSummaryRes =
                 mKeyStore.isHardwareBacked() ? R.string.credential_storage_type_hardware
                         : R.string.credential_storage_type_software;
             credentialStorageType.setSummary(storageSummaryRes);
 
-            mResetCredentials = root.findPreference(KEY_RESET_CREDENTIALS);
         } else {
             removePreference(KEY_CREDENTIALS_MANAGER);
         }
@@ -386,6 +415,12 @@ public class SecuritySettings extends SettingsPreferenceFragment
             }
         }
 
+        if (shouldBePinProtected(RESTRICTIONS_PIN_SET)) {
+            protectByRestrictions(mToggleAppInstallation);
+            protectByRestrictions(mToggleVerifyApps);
+            protectByRestrictions(mResetCredentials);
+            protectByRestrictions(root.findPreference(KEY_CREDENTIALS_INSTALL));
+        }
         return root;
     }
 
@@ -561,10 +596,17 @@ public class SecuritySettings extends SettingsPreferenceFragment
 
         // Blacklist
         updateBlacklistSummary();
+
+        if (mEnableKeyguardWidgets != null) {
+            mEnableKeyguardWidgets.setChecked(lockPatternUtils.getWidgetsEnabled());
+        }
     }
 
     @Override
     public boolean onPreferenceTreeClick(PreferenceScreen preferenceScreen, Preference preference) {
+        if (ensurePinRestrictedPreference(preference)) {
+            return true;
+        }
         final String key = preference.getKey();
 
         final LockPatternUtils lockPatternUtils = mChooseLockSettingsHelper.utils();
@@ -612,6 +654,8 @@ public class SecuritySettings extends SettingsPreferenceFragment
             lockPatternUtils.setPowerButtonInstantlyLocks(isToggled(preference));
         } else if (LOCK_SYNC_ENCRYPTION_PASSWORD.equals(key)) {
             lockPatternUtils.setSyncEncryptionPassword(isToggled(preference));
+        } else if (KEY_ENABLE_WIDGETS.equals(key)) {
+            lockPatternUtils.setWidgetsEnabled(mEnableKeyguardWidgets.isChecked());
         } else if (preference == mShowPassword) {
             Settings.System.putInt(getContentResolver(), Settings.System.TEXT_SHOW_PASSWORD,
                     mShowPassword.isChecked() ? 1 : 0);

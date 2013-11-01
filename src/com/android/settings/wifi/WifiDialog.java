@@ -38,8 +38,8 @@ class WifiDialog extends AlertDialog implements WifiConfigUiBase {
     private WifiConfigController mController;
 
     public WifiDialog(Context context, DialogInterface.OnClickListener listener,
-            AccessPoint accessPoint, boolean edit, boolean ibssSupported) {
-        super(context, R.style.Theme_WifiDialog);
+            AccessPoint accessPoint, boolean edit) {
+        super(context);
         mEdit = edit;
         mIbssSupported = ibssSupported;
         mListener = listener;

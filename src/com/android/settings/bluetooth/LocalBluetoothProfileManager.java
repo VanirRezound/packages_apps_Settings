@@ -19,6 +19,7 @@ package com.android.settings.bluetooth;
 import android.bluetooth.BluetoothA2dp;
 import android.bluetooth.BluetoothDevice;
 import android.bluetooth.BluetoothHeadset;
+import android.bluetooth.BluetoothMap;
 import android.bluetooth.BluetoothInputDevice;
 import android.bluetooth.BluetoothPan;
 import android.bluetooth.BluetoothSap;
@@ -47,7 +48,7 @@ import android.os.SystemProperties;
  */
 final class LocalBluetoothProfileManager {
     private static final String TAG = "LocalBluetoothProfileManager";
-
+    private static final boolean DEBUG = Utils.D;
     /** Singleton instance. */
     private static LocalBluetoothProfileManager sInstance;
 
@@ -82,6 +83,7 @@ final class LocalBluetoothProfileManager {
 
     private A2dpProfile mA2dpProfile;
     private HeadsetProfile mHeadsetProfile;
+    private MapProfile mMapProfile;
     private final HidProfile mHidProfile;
     private OppProfile mOppProfile;
     private final PanProfile mPanProfile;
@@ -137,12 +139,17 @@ final class LocalBluetoothProfileManager {
                     BluetoothDun.ACTION_CONNECTION_STATE_CHANGED);
         }
 
+        if(DEBUG) Log.d(TAG, "Adding local MAP profile");
+        mMapProfile = new MapProfile(mContext, mLocalAdapter,
+                mDeviceManager, this);
+        addProfile(mMapProfile, MapProfile.NAME,
+                BluetoothMap.ACTION_CONNECTION_STATE_CHANGED);
 
        //Create PBAP server profile, but do not add it to list of profiles
        // as we do not need to monitor the profile as part of profile list
         mPbapProfile = new PbapServerProfile(context);
 
-        Log.d(TAG, "LocalBluetoothProfileManager construction complete");
+        if (DEBUG) Log.d(TAG, "LocalBluetoothProfileManager construction complete");
     }
 
     /**
@@ -156,7 +163,7 @@ final class LocalBluetoothProfileManager {
         // A2DP
         if (BluetoothUuid.isUuidPresent(uuids, BluetoothUuid.AudioSource)) {
             if (mA2dpProfile == null) {
-                Log.d(TAG, "Adding local A2DP profile");
+                if(DEBUG) Log.d(TAG, "Adding local A2DP profile");
                 mA2dpProfile = new A2dpProfile(mContext, mLocalAdapter, mDeviceManager, this);
                 addProfile(mA2dpProfile, A2dpProfile.NAME,
                         BluetoothA2dp.ACTION_CONNECTION_STATE_CHANGED);
@@ -169,7 +176,7 @@ final class LocalBluetoothProfileManager {
         if (BluetoothUuid.isUuidPresent(uuids, BluetoothUuid.Handsfree_AG) ||
             BluetoothUuid.isUuidPresent(uuids, BluetoothUuid.HSP_AG)) {
             if (mHeadsetProfile == null) {
-                Log.d(TAG, "Adding local HEADSET profile");
+                if (DEBUG) Log.d(TAG, "Adding local HEADSET profile");
                 mHeadsetProfile = new HeadsetProfile(mContext, mLocalAdapter,
                         mDeviceManager, this);
                 addProfile(mHeadsetProfile, HeadsetProfile.NAME,
@@ -182,7 +189,7 @@ final class LocalBluetoothProfileManager {
         // OPP
         if (BluetoothUuid.isUuidPresent(uuids, BluetoothUuid.ObexObjectPush)) {
             if (mOppProfile == null) {
-                Log.d(TAG, "Adding local OPP profile");
+                if(DEBUG) Log.d(TAG, "Adding local OPP profile");
                 mOppProfile = new OppProfile();
                 // Note: no event handler for OPP, only name map.
                 mProfileNameMap.put(OppProfile.NAME, mOppProfile);
@@ -320,7 +327,6 @@ final class LocalBluetoothProfileManager {
         return mPbapProfile;
     }
 
-
     /**
      * Fill in a list of LocalBluetoothProfile objects that are supported by
      * the local device and the remote device.
@@ -365,14 +371,15 @@ final class LocalBluetoothProfileManager {
             removedProfiles.remove(mOppProfile);
         }
 
-        if (BluetoothUuid.isUuidPresent(uuids, BluetoothUuid.Hid) &&
+        if ((BluetoothUuid.isUuidPresent(uuids, BluetoothUuid.Hid) ||
+             BluetoothUuid.isUuidPresent(uuids, BluetoothUuid.Hogp)) &&
             mHidProfile != null) {
             profiles.add(mHidProfile);
             removedProfiles.remove(mHidProfile);
         }
 
         if(isPanNapConnected)
-            Log.d(TAG, "Valid PAN-NAP connection exists.");
+            if(DEBUG) Log.d(TAG, "Valid PAN-NAP connection exists.");
         if ((BluetoothUuid.isUuidPresent(uuids, BluetoothUuid.NAP) &&
             mPanProfile != null) || isPanNapConnected) {
             profiles.add(mPanProfile);

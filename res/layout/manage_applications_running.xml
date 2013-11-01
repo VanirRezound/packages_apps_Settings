@@ -24,13 +24,11 @@
         android:visibility="gone" />
 
     <LinearLayout android:id="@+id/loading_container"
-        android:orientation="vertical"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_marginStart="@*android:dimen/preference_fragment_padding_side"
-        android:layout_marginEnd="@*android:dimen/preference_fragment_padding_side"
-        android:visibility="gone"
-        android:gravity="center">
+            android:orientation="vertical"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:visibility="gone"
+            android:gravity="center">
 
         <ProgressBar style="?android:attr/progressBarStyleLarge"
             android:layout_width="wrap_content"
