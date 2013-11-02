@@ -23,148 +23,12 @@
     <string name="misc_short">Misc</string>
 
     <!-- Power menu enable disable -->
-    <string name="power_menu_title">Power menu</string>
-    <string name="power_menu_summary">Enables reboot, screenshot, airplane mode, and sound panel for the power menu</string>
+    <string name="power_menu_title">Power menu entries</string>
     <string name="power_menu_reboot_title">Reboot menu</string>
     <string name="power_menu_screenshot_title">Screenshot</string>
     <string name="power_menu_airplane_title">Airplane mode</string>
     <string name="power_menu_silent_title">Sound panel</string>
-
-    <!-- Display settings screen, notification light settings -->
-    <string name="display_category_light_options_title">Light options</string>
-    <string name="notification_light_general_title">General</string>
-    <string name="notification_light_applist_title">Applications</string>
-    <string name="notification_light_phonelist_title">Phone</string>
-    <string name="notification_light_use_custom">Use custom values</string>
-    <string name="notification_light_enabled">Enabled</string>
-    <string name="notification_light_disabled">Disabled</string>
-    <string name="notification_light_default_value">Default</string>
-    <string name="notification_light_missed_call_title">Missed call</string>
-    <string name="notification_light_voicemail_title">Voicemail</string>
-    <string name="notification_light_choose_app">Choose application</string>
-    <string name="notification_light_add">Add</string>
-
-    <!-- Notification light dialogs -->
-    <string name="edit_light_settings">Edit light settings</string>
-    <string name="pulse_speed_title">Pulse length and speed</string>
-    <string name="picker_arrow">→</string>
-    <string name="default_time">Normal</string>
-    <string name="custom_time">Custom</string>
-    <string name="dialog_test">Test</string>
-    <string name="dialog_delete_title">Delete</string>
-    <string name="dialog_delete_message">Remove selected item?</string>
-    <string name="dialog_test_message">Turn the screen off to see the selected notification in action or dismiss this dialog to stop the test</string>
-    <string name="dialog_test_button">Dismiss</string>
-
-    <!-- Values for the notification light pulse spinners -->
-    <string name="pulse_length_always_on">Always on</string>
-    <string name="pulse_length_very_short">Very short</string>
-    <string name="pulse_length_short">Short</string>
-    <string name="pulse_length_normal">Normal</string>
-    <string name="pulse_length_long">Long</string>
-    <string name="pulse_length_very_long">Very long</string>
-    <string name="pulse_speed_very_fast">Very fast</string>
-    <string name="pulse_speed_fast">Fast</string>
-    <string name="pulse_speed_normal">Normal</string>
-    <string name="pulse_speed_slow">Slow</string>
-    <string name="pulse_speed_very_slow">Very slow</string>
-
-    <!-- Battery light settings -->
-    <string name="battery_reset_title">Reset</string>
-    <string name="battery_light_title">Battery light</string>
-    <string name="battery_low_pulse_title">Pulse if battery low</string>
-    <string name="battery_light_list_title">Colors while charging</string>
-    <string name="battery_light_low_color_title">Battery low</string>
-    <string name="battery_light_medium_color_title">Medium charge</string>
-    <string name="battery_light_full_color_title">Fully charged</string>
-
-    <!-- Color Picker -->
-    <string name="dialog_color_picker">Color Picker</string>
-    <string name="press_color_to_apply">Press on color below to apply</string>
-    <string name="arrow_right">→</string>
-    <string name="arrow_down">↓</string>
-    <string name="hex">Hex:</string>
-    <string name="hex_hint">#ff000000</string>
-    <string name="set">Set</string>
-    <string name="color_default">Default</string>
-
-
-    <!-- Status bar -->
-    <string name="status_bar_title">Status bar</string>
-    <string name="status_bar_style_title">Style</string>
-
-    <!-- Status bar | Clock -->
-    <string name="status_bar_clock">Clock and date</string>
-    <string name="status_bar_clock_title">Clock and date style</string>
-    <string name="clock_title_enable">Alignment</string>
-    <string name="clock_enabled">Enabled</string>
-    <string name="clock_disabled">Disabled</string>
-    <string name="clock_color_title">Color</string>
-    <string name="status_bar_clock_style_reset">Reset color</string>
-    <string name="status_bar_show_clock_title">Show clock and date</string>
-    <string name="status_bar_am_pm_title">AM/PM</string>
-    <string name="status_bar_am_pm_info">24-hour clock is enabled</string>
-    <string name="enable_clock_weekday">Day of the week</string>
-    <string name="enable_clock_weekday_summary">Abbreviated day of the week before the time</string>
-    <string name="right_clock">Right clock</string>
-    <string name="center_clock">Center clock</string>
-    <string name="dont_show">Don\'t show</string>
-    <string name="clock_date_display">Date</string>
-    <string name="clock_date_display_summary">Display custom date before the clock</string>
-    <string name="clock_date_style">Date style</string>
-    <string name="clock_date_format">Date format</string>
-    <string name="clock_date_string_edittext_title">Must be in DateFormat eg. MM/dd/yy</string>
-    <string name="clock_date_string_edittext_summary">Enter string</string>
-    <string name="am_pm_clock_normal">Normal font size</string>
-    <string name="am_pm_clock_small">Small font size</string>
-    <string name="am_pm_clock_none">Don\'t show</string>
-    <string name="clock_date_display_none">Don\'t show</string>
-    <string name="clock_date_display_small">Small font size</string>
-    <string name="clock_date_display_normal">Normal font size</string>
-    <string name="clock_date_style_normal">Normal</string>
-    <string name="clock_date_style_lowercase">Lowercase</string>
-    <string name="clock_date_style_uppercase">Uppercase</string>
-    <string name="clock_date_format_custom">Custom java format</string>
-    <string name="status_bar_clock_style_reset_message">Reset clock color?</string>
-
-    <!-- LCD Density -->
-    <string name="lcd_density_title">LCD Density</string>
-    <string name="lcd_density_summary">unknown</string>
-    <string name="current_lcd_density">"Current LCD Density: "</string>
-    <string name="lcd_density_wizard">LCD Density Wizard</string>
-    <string name="follow_through_title">Follow through!</string>
-    <string name="follow_through_summary">Make sure you follow the steps one-by-one and complete each one before proceeding to the next.</string>
-    <string name="stock_density_title">1. Change LCD Density to stock value</string>
-    <string name="stock_density_summary">Tablets and older phones use 160. Most phones use 240. Galaxy Nexus uses 320 by default.</string>
-    <string name="stock_density_changed_summary">"Density set to: "</string>
-    <string name="reboot_title">2. Reboot!</string>
-    <string name="reboot_summary">Come back here after the reboot and complete the rest of the steps!</string>
-    <string name="clear_market_data_title">3. Clear all relevant market data.</string>
-    <string name="clear_market_data_summary">This step clears data from market, google play services and google services framework.</string>
-    <string name="clear_market_data_cleared">Data successfully cleared</string>
-    <string name="clear_market_data_donot_cleared">"Data couldn't be cleared, please clear it yourself!"</string>
-    <string name="reboot_cleardata_title">4. Reboot!</string>
-    <string name="reboot_cleardata_summary">Come back here after the reboot and complete the rest of the steps!</string>
-    <string name="open_market_title">5. Open Market and hit accept</string>
-    <string name="open_market_summary">Press back when done to return here.</string>
-    <string name="open_market_summary_could_not_open">"Couldn't open the market! If you're sure it's installed, open it yourself from the launcher."</string>
-    <string name="custom_density_title">6. Change density to whatever you like!</string>
-    <string name="custom_density_summary">If you ever have compatibility issues with the market, be sure to return here and repeat the process.</string>
-    <string name="custom_density_summary_invalid">"INVALID DENSITY!"</string>
-    <string name="custom_density">custom</string>
-    <string name="set_custom_density_title">Set custom density</string>
-    <string name="set_custom_density_set">Set</string>
-    <string name="custom_density_dialog_title">"WARNING!"</string>
-    <string name="custom_density_dialog_summary">"Changing your LCD density can cause unexpected app behavior. If you encounter market app incompatibility please return here and restart the process from step 1."</string>
-    <string name="custom_density_dialog_button_got">Got it!</string>
-    <string name="custom_density_dialog_button_reboot">Reboot now</string>
-    <string name="dpi">DPI</string>
-
-    <!-- Shortcut picker -->
-    <string name="use_custom_app_title">Use custom application</string>
-    <string name="use_custom_app_summary">Use custom application instead of the recent applications dialog</string>
-    <string name="group_applications">Applications</string>
-    <string name="select_custom_app_title">Select custom application</string>
+    <string name="power_menu_profile_title">Profiles</string>
 
      <!-- Animation Controls -->
     <string name="general_animation_title">General</string>
@@ -187,6 +51,7 @@
     <string name="animation_duration_default">Default</string>
     <string name="disclaimer_summary">Note: wallpaper animations involve animations performed from the launcher. Wallpaper closing is for moving away from viewing the wallpaper such as opening an app.</string>
     <string name="multiplier_title">Default multiplier scales</string>
+
     <!-- ListView animation -->
     <string name="listview_animation_title">ListView scrolling animation</string>
     <string name="listview_off">Off</string>
